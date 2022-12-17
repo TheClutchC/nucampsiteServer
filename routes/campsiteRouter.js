@@ -1,8 +1,7 @@
 const express = require("express");
-const { response } = require("../app");
-const Campsite = require("../models/campsite");
-
 const campsiteRouter = express.Router();
+
+const Campsite = require("../models/campsite");
 
 campsiteRouter.route("/")
 .get((req, res, next) => {
@@ -17,8 +16,7 @@ campsiteRouter.route("/")
 .post((req, res, next) => {
     Campsite.create(req.body)
     .then(campsite => {
-        console.log("Campsite Created ", campsite);
-        res.statusCode = 200;
+        res.statusCode = 201;
         res.setHeader("Content-Type", "application/json");
         res.json(campsite);
     })
@@ -30,10 +28,10 @@ campsiteRouter.route("/")
 })
 .delete((req,res, next) => {
     Campsite.deleteMany()
-    .then(response => {
+    .then(campsites => {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.json(response);
+        res.json(campsites);
     })
     .catch(err => next(err));
 });
@@ -41,11 +39,7 @@ campsiteRouter.route("/")
 campsiteRouter.route("/:campsiteId")
 .get((req, res, next) => {
     Campsite.findById(req.params.campsiteId)
-    .then(campsite => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(campsite);
-    })
+    .then(campsite => res.status(200).json(campsite))
     .catch(err => next(err));
 })
 .post((req, res) => {
@@ -59,17 +53,13 @@ campsiteRouter.route("/:campsiteId")
     .then(campsite => {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.json(campsite);
+        res.json(campsite)
     })
     .catch(err => next(err));
 })
 .delete((req,res, next) => {
     Campsite.findByIdAndDelete(req.params.campsiteId)
-    .then(response => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(response);
-    })
+    .then(campsite => res.status(200).json(campsite))
     .catch(err => next(err));
 });
 
